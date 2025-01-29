@@ -192,7 +192,34 @@ body::before {
   .select-box option {
     background: #333;
     color: white;
-  }  
+  }
+
+  .button3 {
+    background: linear-gradient(135deg, #6e8efb, #a777e3);
+    border: none;
+    color: white;
+    padding: 12px 24px;
+    margin: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: block;
+    width: 100%;
+    text-align: center;
+}
+
+.button3:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+.button3:active {
+    transform: scale(0.98);
+}
+
 
   /* 生成対象 */
   .genTarget{}
@@ -201,4 +228,59 @@ body::before {
 
   .genImg{}
 
+  .help-window {
+    background-color: transparent;
+    padding: 10px;
+    border-radius: 6px;
+    max-width: 280px;
+    font-size: 14px;
+}
 
+.help-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+}
+
+.help-item:last-child {
+    border-bottom: none;
+}
+
+.help-icon {
+    margin-right: 6px;
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.8); /* 落ち着いた色 */
+}
+
+.help-text {
+    flex: 1;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+}
+
+#modal{
+    background-color: rgb(0, 0, 0, 0.6);
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1000;
+}
+
+.btn-delete {
+    background-color: #e53e3e; /* 赤系の危険カラー */
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+  }
+  
+  .btn-delete:hover {
+    background-color: #c53030;
+  }
+  
+  .btn-delete:active {
+    background-color: #9b2c2c;
+  }
+  

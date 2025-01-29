@@ -12,6 +12,8 @@ var helpWindow = document.getElementById("helpWindow");
 var Ubutton = document.getElementById("Ubutton");
 var Bbutton = document.getElementById("Bbutton");
 var menuSelect = document.getElementById("menuSelect");
+var deleteBtn = document.getElementById("deleteBtn");
+var modal = document.getElementById("modal");
 
 var mainData = [];
 
@@ -29,12 +31,12 @@ editorDiv.addEventListener('click',function(event){
     element.classList.add('forText');
     element.classList.add('absolute');
     element.classList.add('genTarget');
-    element.classList.add('getText');
+    element.classList.add('genText');
     element.style.left = mouseX + "px";
     element.style.top = mouseY + "px";
     element.placeholder="テキストを追加";
     element.autocomplete="off";
-    element.spellcheck="off";
+    element.spellcheck=false;
     element.style.zIndex=15;
     mouseDrag(element);
     editorDiv.appendChild(element);
@@ -55,7 +57,11 @@ editorDiv.addEventListener('click',function(event){
     //右クリックで削除（仮）
     element.addEventListener("contextmenu", function(event){
         event.preventDefault();
-        element.remove();
+        currentElement=element;
+        modal.hidden=false;
+        deleteBtn.hidden=false;
+        deleteBtn.style.left = mouseX + "px";
+        deleteBtn.style.top = mouseY + "px";
     });
 
     //不使用なら削除
@@ -109,7 +115,7 @@ function addPage(){
         var pageHeight = window.getComputedStyle(document.getElementById("page"+pageCount)).height; //ページの高さを取得
         pageHeight = parseFloat(pageHeight.substring(0,pageHeight.length-2));
     element.style.top= pageHeight * pageCount + "px";
-    // alert(pageHeight * pageCount + "px")
+    // //alert(pageHeight * pageCount + "px")
     editorDiv.appendChild(element);
 
     //ページ数表示
@@ -156,6 +162,7 @@ editorDiv.addEventListener('drop', function(event){
         const reader = new FileReader();
   
         reader.onload = function(e) {
+            const base64Image = e.target.result;
             const img = document.createElement('img'); //img要素作成
             img.src = e.target.result;
             img.style.maxWidth = '80%';
@@ -164,7 +171,8 @@ editorDiv.addEventListener('drop', function(event){
             img.style.top = mouseY + "px";
             img.style.position="absolute";
             img.style.zIndex=15;
-            img.id=randomID();
+            // img.id=randomID();
+            img.id = base64Image;
             img.classList.add('genTarget');
             img.classList.add('genImg');
             mouseDrag(img);
@@ -198,11 +206,20 @@ editorDiv.addEventListener('drop', function(event){
                 fontSizeRange.disabled=true;
                 heightRange.disabled=true;
             })
+
+            img.addEventListener("contextmenu", function(event){
+                event.preventDefault();
+                currentElement=img;
+                modal.hidden=false;
+                deleteBtn.hidden=false;
+                deleteBtn.style.left = mouseX + "px";
+                deleteBtn.style.top = mouseY + "px";
+            });
         };
   
         reader.readAsDataURL(file); // ファイルをDataURLとして読み込む
       } else {
-        alert('画像ファイルのみドロップできます');
+        //alert('画像ファイルのみドロップできます');
       }
     }
 });
@@ -217,6 +234,7 @@ editorDiv.addEventListener('paste', function(event){
             const reader = new FileReader();
 
             reader.onload = function(e) {
+                const base64Image = e.target.result;
                 const img = document.createElement('img'); // img要素を作成
                 img.src = e.target.result;
                 // img.style.maxWidth = '80%';
@@ -227,7 +245,8 @@ editorDiv.addEventListener('paste', function(event){
                 img.style.zIndex=15;
                 img.classList.add('genTarget');
                 img.classList.add('genImg');
-                img.id=randomID();
+                // img.id=randomID();
+                img.id = base64Image;
                 mouseDrag(img);
                 editorDiv.appendChild(img);
 
@@ -259,11 +278,20 @@ editorDiv.addEventListener('paste', function(event){
                     fontSizeRange.disabled = true;
                     heightRange.disabled = true;
                 });
+
+                img.addEventListener("contextmenu", function(event){
+                    event.preventDefault();
+                    currentElement=img;
+                    modal.hidden=false;
+                    deleteBtn.hidden=false;
+                    deleteBtn.style.left = mouseX + "px";
+                    deleteBtn.style.top = mouseY + "px";
+                });
             };
 
             reader.readAsDataURL(file); // ファイルをDataURLとして読み込む
         } else {
-            alert('画像ファイルのみペーストできます');
+            //alert('画像ファイルのみペーストできます');
         }
     }
 });
@@ -325,6 +353,18 @@ menuSelect.addEventListener('input', function(event){
     }
 })
 
+function deleteElement(){
+    if(currentElement == taskWindow)return;
+    currentElement.remove();
+    modal.hidden=true;
+    deleteBtn.hidden=true;
+}
+
+function HideDeleteModal(){
+    modal.hidden=true;
+    deleteBtn.hidden=true;
+}
+
 
 
 
@@ -357,9 +397,11 @@ menuSelect.addEventListener('input', function(event){
 var mouseX;
 var mouseY;
 document.addEventListener("mousemove", function(event) {
-    mouseX = event.clientX;
-    mouseY = event.clientY;
+    mouseX = event.pageX;
+    mouseY = event.pageY;
+    console.log("Mouse X: " + mouseX + ", Mouse Y: " + mouseY);
 });
+
 
 
 //未使用のテキストエリアを判定（空文字 or　改行のみならtrueを返却）
@@ -447,15 +489,38 @@ function generate(){
     body{
       width: 100vw;
       height: ${911 * pageCount}px;
-      style: "overflow-x: hidden;
+      overflow-x: hidden;
+    }
+    /* スクロールバー */
+    ::-webkit-scrollbar {
+        width: 8px; /* スクロールバーの幅 */
+    }
+    
+    ::-webkit-scrollbar-track {
+        background: #1a1a1a; /* トラックの背景色 */
+        border-radius: 4px; /* 丸みを帯びた角 */
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background-color: #555; /* スクロールバーの色 */
+        border-radius: 4px;
+        border: 1px solid #333; /* スクロールバーの縁 */
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+        background-color: #888; /* ホバー時の色 */
+    } 
+
+    ::-webkit-scrollbar-corner {
+        background: transparent; /* 交差部分の背景色 */
     }
   </style>
 </head>
-<body>`
-;
+<body>
+`;
 
     //生成対象を配列に格納
-    var targetArray = document.getElementsByClassName('genTarget');
+    var targetArray = Array.from(document.getElementsByClassName('genTarget'));
 
     // heightの昇順に並べ替え
     targetArray.sort((a, b) => {
@@ -466,14 +531,14 @@ function generate(){
         //分岐
         switch(element.classList.contains('genText')){
             case true:{//テキスト
-                const style = window.getComputedStyle(currentElement);
-                resultCode += ` <textarea class="forText" style="position: absolute; left: ${window.getComputedStyle(element).left}; top: ${window.getComputedStyle(element).top}; width: ${window.getComputedStyle(element).width}; height: ${window.getComputedStyle(element).height}; ${style.fontWeight == 700 ? "font-weight: bold; " : ""}${style.textDecorationLine == "underline" ? "text-decoration: underline;" : ""}">${element.value}</textarea>
+                const style = window.getComputedStyle(element);
+                resultCode += ` <textarea class="forText" style="position: absolute; left: ${window.getComputedStyle(element).left}; top: ${window.getComputedStyle(element).top}; width: ${window.getComputedStyle(element).width}; height: ${window.getComputedStyle(element).height}; font-size: ${window.getComputedStyle(element).fontSize}; ${style.fontWeight == 700 ? "font-weight: bold; " : ""}${style.textDecorationLine == "underline" ? "text-decoration: underline;" : ""}" readonly spellcheck="off">${element.value}</textarea>
 `;
                 break;
             }
             case false:{//画像
-                const style = window.getComputedStyle(currentElement);
-                resultCode += `<img src="${}" style="position: absolute; left: ${window.getComputedStyle(element).left}; top: ${window.getComputedStyle(element).top}; width: ${window.getComputedStyle(element).width}; height: ${window.getComputedStyle(element).height};">`;
+                resultCode += `<img src="${element.id}" style="position: absolute; left: ${window.getComputedStyle(element).left}; top: ${window.getComputedStyle(element).top}; width: ${window.getComputedStyle(element).width}; height: ${window.getComputedStyle(element).height};">
+`;
                 break;
             }
         }
@@ -481,8 +546,19 @@ function generate(){
 
     resultCode += `</body>
 </html>`;
-
 };
+
+
+//プレビュー
+function preview(){
+    generate();
+    // navigator.clipboard.writeText(resultCode)
+    const newWindow = window.open('preview.html', '_blank', `width=${screen.width},height=${screen.height},top=0,left=0`);
+    newWindow.onload = function() {
+        newWindow.postMessage(resultCode, '*');
+    };
+};
+
 
 
 

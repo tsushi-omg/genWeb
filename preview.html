@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="共通関数.js"></script>
+    <script>
+      //メッセージを受信
+      window.addEventListener('message', function(event) {
+          var receiveCode = "";
+          receiveCode = event.data;
+          const area = document.getElementById('new_window_area');
+          area.innerHTML=receiveCode;
+      }, false);
+    </script>
+</head>
+<body>
+    <div id="new_window_area"></div>
+</body>
