@@ -14,6 +14,12 @@ var Bbutton = document.getElementById("Bbutton");
 var menuSelect = document.getElementById("menuSelect");
 var deleteBtn = document.getElementById("deleteBtn");
 var modal = document.getElementById("modal");
+var dlModal = document.getElementById("dlModal");
+var DLContent = document.getElementById("DLContent");
+var fileNameTextbox = document.getElementById("fileNameTextbox");
+var htmlPreviewModal = document.getElementById("htmlPreviewModal");
+var codeContent = document.getElementById("codeContent");
+var htmlCodeViewer = document.getElementById("htmlCodeViewer");
 
 var mainData = [];
 
@@ -365,6 +371,64 @@ function HideDeleteModal(){
     deleteBtn.hidden=true;
 }
 
+//DLモーダル表示
+function openDL(){
+    dlModal.hidden = false;
+    DLContent.hidden = false;
+    fileNameTextbox.focus();
+}
+
+function HideDLModal(){
+    dlModal.hidden=true;
+    DLContent.hidden=true;
+}
+
+//ダウンロード
+fileNameTextbox.value = "";
+function downloadHTML() {
+    // ファイル名を取得
+    let fileName = document.getElementById("fileNameTextbox").value.trim();
+    if (!fileName) {
+        alert("ファイル名を入力してください");
+        return;
+    }
+    fileName += ".html"; // 拡張子を追加
+
+    // HTMLコード（resultCode）の Blob を作成
+    let blob = new Blob([resultCode], { type: "text/html" });
+
+    // Blob を URL に変換
+    let link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = fileName;
+
+    // リンクをクリックしてダウンロードを開始
+    document.body.appendChild(link);
+    link.click();
+
+    // 一時的なリンクを削除
+    document.body.removeChild(link);
+}
+
+//コードビュー
+function openCodeview(){
+    generate();
+    htmlCodeViewer.value=resultCode;
+    htmlPreviewModal.hidden = false;
+    codeContent.hidden = false;
+}
+
+function closeHtmlPreview(){
+    htmlPreviewModal.hidden = true;
+    codeContent.hidden = true;
+}
+
+function copyHtmlCode(){
+    navigator.clipboard.writeText(resultCode);
+}
+
+
+
 
 
 
@@ -399,7 +463,6 @@ var mouseY;
 document.addEventListener("mousemove", function(event) {
     mouseX = event.pageX;
     mouseY = event.pageY;
-    console.log("Mouse X: " + mouseX + ", Mouse Y: " + mouseY);
 });
 
 
