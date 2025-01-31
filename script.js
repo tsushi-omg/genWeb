@@ -20,6 +20,9 @@ var fileNameTextbox = document.getElementById("fileNameTextbox");
 var htmlPreviewModal = document.getElementById("htmlPreviewModal");
 var codeContent = document.getElementById("codeContent");
 var htmlCodeViewer = document.getElementById("htmlCodeViewer");
+var widthInput = document.getElementById("widthInput");
+var heightInput = document.getElementById("heightInput");
+var FSInput = document.getElementById("FSInput");
 
 var mainData = [];
 
@@ -31,6 +34,11 @@ editorDiv.addEventListener('click',function(event){
 
     if(!event.ctrlKey)return;
 
+    createText(false);
+
+});
+
+function createText(isReConstruct, top_, left_, width_, height_, fontSize_, bold_, underline_, value_){
     //入力用のテキストエリアを作成
     const element = document.createElement('textarea');
     element.id = randomID();
@@ -40,6 +48,17 @@ editorDiv.addEventListener('click',function(event){
     element.classList.add('genText');
     element.style.left = mouseX + "px";
     element.style.top = mouseY + "px";
+    if (isReConstruct) { // 再構築
+        element.style.left = left_;
+        element.style.top = top_;
+        element.style.width = width_;
+        element.style.height = height_;
+        element.style.fontSize = fontSize_;
+        element.value = value_;
+      
+        if (bold_) element.style.fontWeight = "bold";
+        if (underline_) element.style.textDecoration = "underline";
+    } 
     element.placeholder="テキストを追加";
     element.autocomplete="off";
     element.spellcheck=false;
@@ -48,19 +67,7 @@ editorDiv.addEventListener('click',function(event){
     editorDiv.appendChild(element);
     element.focus();
 
-    //データを蓄積
-    mainData[element.id]={
-        id: element.id,
-        type: "text",
-        deleted: false
-    };
-
-    // //削除ボタン作成
-    // const button  = document.createElement('button');
-    // button.textContent="✘";
-    // element.appendChild(button);
-
-    //右クリックで削除（仮）
+    //右クリックで削除
     element.addEventListener("contextmenu", function(event){
         event.preventDefault();
         currentElement=element;
@@ -82,32 +89,38 @@ editorDiv.addEventListener('click',function(event){
 
     //スライダー表示
     fontSizeRange.disabled=false;
+    FSInput.disabled=false;
     heightRange.disabled=false;
+    heightInput.disabled=false;
 
     //スライダー更新
     widthRange.value = deletePx(window.getComputedStyle(element).width);
     fontSizeRange.value = deletePx(window.getComputedStyle(element).fontSize);
     heightRange.value = deletePx(window.getComputedStyle(element).height);
 
+    //box更新
+    widthInput.value = deletePx(window.getComputedStyle(element).width);
+    FSInput.value = deletePx(window.getComputedStyle(element).fontSize);
+    heightInput.value = deletePx(window.getComputedStyle(element).height);
+
     //操作中の要素を判別
     element.addEventListener("click", function(event){
         currentElement=element;
         //スライダー表示
         fontSizeRange.disabled=false;
+        FSInput.disabled=false;
         heightRange.disabled=false;
+        heightInput.disabled=false;
         //スライダー更新
         widthRange.value = deletePx(window.getComputedStyle(element).width);
         fontSizeRange.value = deletePx(window.getComputedStyle(element).fontSize);
         heightRange.value = deletePx(window.getComputedStyle(element).height);
+        //box更新
+        widthInput.value = deletePx(window.getComputedStyle(element).width);
+        FSInput.value = deletePx(window.getComputedStyle(element).fontSize);
+        heightInput.value = deletePx(window.getComputedStyle(element).height);
     })
-
-    // //入力内容に合わせて枠サイズを調整
-    // element.addEventListener('input', function(event){
-    //     resize(element);
-    // })
-
-});
-
+}
 
 //ページを追加
 var pageCount = 1;
@@ -142,16 +155,19 @@ function addSliderEvent(range){
             case widthRange:{
                 currentElement.style.width=range.value + "px"
                 heightRange.value=deletePx(window.getComputedStyle(currentElement).height);
+                widthInput.value=this.value;
                 break;
             }
             case heightRange:{
                 currentElement.style.height=range.value + "px";
+                heightInput.value=this.value;
                 break;
             }
             case fontSizeRange:{
                 heightRange.value=deletePx(window.getComputedStyle(currentElement).height);
                 widthRange.value=deletePx(window.getComputedStyle(currentElement).width);
                 currentElement.style.fontSize=range.value + "px";
+                FSInput.value=this.value;
                 break;
             }
         }
@@ -176,6 +192,7 @@ editorDiv.addEventListener('drop', function(event){
             img.style.left = mouseX + "px";
             img.style.top = mouseY + "px";
             img.style.position="absolute";
+            img.classList.add('forimg');
             img.style.zIndex=15;
             // img.id=randomID();
             img.id = base64Image;
@@ -184,22 +201,24 @@ editorDiv.addEventListener('drop', function(event){
             mouseDrag(img);
             editorDiv.appendChild(img);
 
-            //データを蓄積
-            mainData[img.id]={
-                id: img.id,
-                type: "img",
-                deleted: false
-            };
+            // スライダー更新
+            widthRange.value = deletePx(window.getComputedStyle(img).width);
+            heightRange.value = deletePx(window.getComputedStyle(img).height);
+
+            // スライダー非活性
+            fontSizeRange.disabled=true;
+            FSInput.disabled=true;
+            heightRange.disabled=true;
+            heightInput.disabled=true;
 
             currentElement=img;
-
-            //スライダー表示
-            fontSizeRange.disabled=true;
-            heightRange.disabled=true;
 
             //スライダー更新
             widthRange.value = deletePx(window.getComputedStyle(img).width);
             heightRange.value = deletePx(window.getComputedStyle(img).height);
+            //box更新
+            widthInput.value = deletePx(window.getComputedStyle(img).width);
+            heightInput.value = deletePx(window.getComputedStyle(img).height);
 
             //操作中の要素を判別
             img.addEventListener("click", function(event){
@@ -208,9 +227,15 @@ editorDiv.addEventListener('drop', function(event){
                 widthRange.value = deletePx(window.getComputedStyle(img).width);
                 heightRange.value = deletePx(window.getComputedStyle(img).height);
 
+                //box更新
+                widthInput.value = deletePx(window.getComputedStyle(img).width);
+                heightInput.value = deletePx(window.getComputedStyle(img).height);
+
                 //スライダー非活性
                 fontSizeRange.disabled=true;
+                FSInput.disabled=true;
                 heightRange.disabled=true;
+                heightInput.disabled=true;
             })
 
             img.addEventListener("contextmenu", function(event){
@@ -248,6 +273,7 @@ editorDiv.addEventListener('paste', function(event){
                 img.style.left = mouseX + "px";
                 img.style.top = mouseY + "px";
                 img.style.position = "absolute";
+                img.classList.add('forimg');
                 img.style.zIndex=15;
                 img.classList.add('genTarget');
                 img.classList.add('genImg');
@@ -256,18 +282,18 @@ editorDiv.addEventListener('paste', function(event){
                 mouseDrag(img);
                 editorDiv.appendChild(img);
 
-                //データを蓄積
-                mainData[img.id]={
-                    id: img.id,
-                    type: "img",
-                    deleted: false
-                };
+                // スライダー更新
+                widthRange.value = deletePx(window.getComputedStyle(img).width);
+                heightRange.value = deletePx(window.getComputedStyle(img).height);
+
+                // スライダー非活性
+                fontSizeRange.disabled=true;
+                FSInput.disabled=true;
+                heightRange.disabled=true;
+                heightInput.disabled=true;
 
                 currentElement = img;
 
-                // スライダー表示
-                fontSizeRange.disabled = true;
-                heightRange.disabled = true;
 
                 // スライダー更新
                 widthRange.value = deletePx(window.getComputedStyle(img).width);
@@ -281,8 +307,10 @@ editorDiv.addEventListener('paste', function(event){
                     heightRange.value = deletePx(window.getComputedStyle(img).height);
 
                     // スライダー非活性
-                    fontSizeRange.disabled = true;
-                    heightRange.disabled = true;
+                    fontSizeRange.disabled=true;
+                    FSInput.disabled=true;
+                    heightRange.disabled=true;
+                    heightInput.disabled=true;
                 });
 
                 img.addEventListener("contextmenu", function(event){
@@ -386,6 +414,7 @@ function HideDLModal(){
 //ダウンロード
 fileNameTextbox.value = "";
 function downloadHTML() {
+    generate();
     // ファイル名を取得
     let fileName = document.getElementById("fileNameTextbox").value.trim();
     if (!fileName) {
@@ -416,6 +445,7 @@ function openCodeview(){
     htmlCodeViewer.value=resultCode;
     htmlPreviewModal.hidden = false;
     codeContent.hidden = false;
+    codeContent.style.top = mouseY + "px";
 }
 
 function closeHtmlPreview(){
@@ -427,9 +457,157 @@ function copyHtmlCode(){
     navigator.clipboard.writeText(resultCode);
 }
 
+//スライダー横テキストボックス直接入力
+widthInput.addEventListener('input', function(){
+    try{
+        currentElement.style.width=this.value + "px";
+        widthRange.value=this.value;
+
+    }catch(error){}
+})
+
+heightInput.addEventListener('input', function(){
+    try{
+        currentElement.style.height=this.value + "px";
+        heightRange.value=this.value;
+
+    }catch(error){}
+})
+
+FSInput.addEventListener('input', function(){
+    try{
+        currentElement.style.fontSize=this.value + "px";
+        fontSizeRange.value=this.value;
+
+    }catch(error){}
+})
 
 
+// ｈｔｍｌファイルドロップ（json継承）
+editorDiv.addEventListener('drop', function(event) {
+    event.preventDefault();
+    const files = event.dataTransfer.files; // ファイルを取得
+    const file = files[0];
 
+    if (file && file.type === 'text/html') {
+      const reader = new FileReader();
+  
+      reader.onload = function(e) {
+        //htmlソース
+        const htmlContent = e.target.result;
+        //非対応なら終了
+        if(htmlContent.indexOf(`$&')&'&%&'%&'('(&''%$&&%'()=)('&'%$&'()=)~)(&%%&'()((''%$$#$%&&&'&('&('&''(&('&''(&&'&'())'))')')'))')')')')`) == -1)return alert("非対応のhtmlファイルです。");
+        //再構築
+        var extendsJSON = JSON.parse(htmlContent.substring(htmlContent.indexOf(`$&')&'&%&'%&'('(&''%$&&%'()=)('&'%$&'()=)~)(&%%&'()((''%$$#$%&&&'&('&('&''(&('&''(&&'&'())'))')')'))')')')')`)+108,htmlContent.indexOf(`EE$&')&'&%&'%&'('(&''%$&&%'()=)('&'%$&'()=)~)(&%%&'()((''%$$#$%&&&'&('&('&''(&('&''(&&'&'())'))')')'))')')')')`)));
+        mainData = extendsJSON;
+        reConstruct();
+
+        };
+  
+      reader.readAsText(file); // ファイルをテキストとして読み込む
+    } else {
+    }
+  });
+
+//再構築
+function reConstruct(){
+    deleteAll();
+    for(var element of mainData){
+        switch(element.type){
+            case "text":{
+                createText(true, element.top, element.left, element.width, element.height, element.fontSize, element.bold, element.underline, element.value);
+                break;
+            }
+            case "img":{
+                createImg(element.top, element.left, element.width, element.height, element.src);
+                break;
+            }
+            case "body":{
+                reConstructPage(element.height);
+                break;
+            }
+        }
+    }
+}
+
+function createImg(top_, left_, width_, height_, src_){
+    const img = document.createElement('img'); // img要素を作成
+    img.src = src_;
+    img.style.height = "auto";
+    img.style.width = width_;
+    img.style.left = left_;
+    img.style.top = top_;
+    img.style.position = "absolute";
+    img.classList.add('forimg');
+    img.style.zIndex=15;
+    img.classList.add('genTarget');
+    img.classList.add('genImg');
+    img.id = src_;
+    mouseDrag(img);
+    editorDiv.appendChild(img);
+
+    // スライダー更新
+    widthRange.value = deletePx(window.getComputedStyle(img).width);
+    heightRange.value = deletePx(window.getComputedStyle(img).height);
+
+    // スライダー非活性
+    fontSizeRange.disabled=true;
+    FSInput.disabled=true;
+    heightRange.disabled=true;
+    heightInput.disabled=true;
+
+    currentElement = img;
+
+
+    // スライダー更新
+    widthRange.value = deletePx(window.getComputedStyle(img).width);
+    heightRange.value = deletePx(window.getComputedStyle(img).height);
+
+    // 操作中の要素を判別
+    img.addEventListener("click", function(event){
+        currentElement = img;
+        // スライダー更新
+        widthRange.value = deletePx(window.getComputedStyle(img).width);
+        heightRange.value = deletePx(window.getComputedStyle(img).height);
+
+        // スライダー非活性
+        fontSizeRange.disabled=true;
+        FSInput.disabled=true;
+        heightRange.disabled=true;
+        heightInput.disabled=true;
+    });
+
+    img.addEventListener("contextmenu", function(event){
+        event.preventDefault();
+        currentElement=img;
+        modal.hidden=false;
+        deleteBtn.hidden=false;
+        deleteBtn.style.left = mouseX + "px";
+        deleteBtn.style.top = mouseY + "px";
+    });
+}
+
+//画面クリア
+function deleteAll(){
+    //画面要素削除
+    for(var element of Array.from(document.getElementsByClassName('genTarget'))){
+        element.remove();
+    }
+    //ページ削除
+    for(var element of Array.from(document.getElementsByClassName('page'))){
+        if(element.id != "editorDiv")element.remove();
+    }
+    pageCount=1;
+}
+
+//ページ復元
+function reConstructPage(height){
+    var cnt = (parseInt(height)/911)-1;
+    for(let i = 0; i < cnt; i++){
+        addPage();
+    }
+}
+  
 
 
 // 共通関数**************************************************************************
@@ -535,6 +713,10 @@ var resultCode;
 //レイアウトをもとにhtmlを生成
 function generate(){
 
+    var cnt = 0;
+
+    mainData=[];
+
     resultCode = `<!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -542,40 +724,45 @@ function generate(){
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Yuji+Syuku&display=swap');
+    
     .forText{
       background-color: transparent;
       color: black;
       outline: none;
       resize: none;
       border: none;
+      font-family: 'Yuji Syuku', serif;
     }
+
     body{
       width: 100vw;
-      height: ${911 * pageCount}px;
+      height: ${911 * pageCount}px;/* ページの長さを指定 */
       overflow-x: hidden;
     }
+
     /* スクロールバー */
     ::-webkit-scrollbar {
-        width: 8px; /* スクロールバーの幅 */
+        width: 8px;
     }
     
     ::-webkit-scrollbar-track {
-        background: #1a1a1a; /* トラックの背景色 */
-        border-radius: 4px; /* 丸みを帯びた角 */
+        background: #1a1a1a;
+        border-radius: 4px;
     }
     
     ::-webkit-scrollbar-thumb {
-        background-color: #555; /* スクロールバーの色 */
+        background-color: #555;
         border-radius: 4px;
-        border: 1px solid #333; /* スクロールバーの縁 */
+        border: 1px solid #333;
     }
     
     ::-webkit-scrollbar-thumb:hover {
-        background-color: #888; /* ホバー時の色 */
+        background-color: #888;
     } 
 
     ::-webkit-scrollbar-corner {
-        background: transparent; /* 交差部分の背景色 */
+        background: transparent;
     }
   </style>
 </head>
@@ -591,23 +778,54 @@ function generate(){
     });
 
     for(var element of targetArray){
+        cnt++;
         //分岐
         switch(element.classList.contains('genText')){
             case true:{//テキスト
                 const style = window.getComputedStyle(element);
-                resultCode += ` <textarea class="forText" style="position: absolute; left: ${window.getComputedStyle(element).left}; top: ${window.getComputedStyle(element).top}; width: ${window.getComputedStyle(element).width}; height: ${window.getComputedStyle(element).height}; font-size: ${window.getComputedStyle(element).fontSize}; ${style.fontWeight == 700 ? "font-weight: bold; " : ""}${style.textDecorationLine == "underline" ? "text-decoration: underline;" : ""}" readonly spellcheck="off">${element.value}</textarea>
+                resultCode += `<textarea class="forText" style="position: absolute; left: ${window.getComputedStyle(element).left}; top: ${window.getComputedStyle(element).top}; width: ${window.getComputedStyle(element).width}; height: ${window.getComputedStyle(element).height}; font-size: ${window.getComputedStyle(element).fontSize}; ${style.fontWeight == 700 ? "font-weight: bold; " : ""}${style.textDecorationLine == "underline" ? "text-decoration: underline;" : ""}" readonly spellcheck="off">${element.value}</textarea>
 `;
+            //再生成時用の情報
+            mainData.push({
+                type: "text",
+                top: window.getComputedStyle(element).top,
+                left: window.getComputedStyle(element).left,
+                width: window.getComputedStyle(element).width,
+                height: window.getComputedStyle(element).height,
+                fontSize: window.getComputedStyle(element).fontSize,
+                bold: style.fontWeight == 700,
+                underline: style.textDecorationLine == "underline",
+                value: element.value
+            });
                 break;
             }
             case false:{//画像
-                resultCode += `<img src="${element.id}" style="position: absolute; left: ${window.getComputedStyle(element).left}; top: ${window.getComputedStyle(element).top}; width: ${window.getComputedStyle(element).width}; height: ${window.getComputedStyle(element).height};">
+                resultCode += `<!-- イメージ -->
+<img src="${element.id}" style="position: absolute; left: ${window.getComputedStyle(element).left}; top: ${window.getComputedStyle(element).top}; width: ${window.getComputedStyle(element).width}; height: ${window.getComputedStyle(element).height};">
 `;
+            //再生成時用の情報
+            mainData.push({
+                type: "img",
+                top: window.getComputedStyle(element).top,
+                left: window.getComputedStyle(element).left,
+                width: window.getComputedStyle(element).width,
+                height: window.getComputedStyle(element).height,
+                src: element.id
+            });
                 break;
             }
         }
     }
 
+    //再生成時用の情報
+    mainData.push({
+        type: "body",
+        height: 911 * pageCount
+    });
+
     resultCode += `</body>
+<!--$&')&'&%&'%&'('(&''%$&&%'()=)('&'%$&'()=)~)(&%%&'()((''%$$#$%&&&'&('&('&''(&('&''(&&'&'())'))')')'))')')')')${JSON.stringify(mainData)}EE$&')&'&%&'%&'('(&''%$&&%'()=)('&'%$&'()=)~)(&%%&'()((''%$$#$%&&&'&('&('&''(&('&''(&&'&'())'))')')'))')')')')
+-->
 </html>`;
 };
 
