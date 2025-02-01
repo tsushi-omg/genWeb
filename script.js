@@ -724,7 +724,7 @@ function generate(){
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Yuji+Syuku&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap" rel="stylesheet');
     
     .forText{
       background-color: transparent;
@@ -732,7 +732,7 @@ function generate(){
       outline: none;
       resize: none;
       border: none;
-      font-family: 'Yuji Syuku', serif;
+      font-family: 'Poppins', sans-serif;
     }
 
     body{

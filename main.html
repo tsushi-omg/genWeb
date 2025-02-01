@@ -9,7 +9,7 @@
 </head>
 <header>
     <!-- タスクウィンドウ -->
-    <div id="taskWindow" style="user-select: none;">
+    <div id="taskWindow" style="user-select: none; font-family: 'Yuji Syuku', serif !important;">
         <div class="absolute">
             <div class="mt-2" style="margin-left: 290px;">
                 <select class="select-box" id="menuSelect">
@@ -73,7 +73,7 @@
     <button id="deleteBtn" class="btn-delete absolute" style="z-index: 1100;" onclick="deleteElement()" hidden>削除</button>
     <!-- ダウンロードモーダル -->
     <div id="dlModal" onclick="HideDLModal()" class="absolute" hidden></div>
-    <div class="modal-content absolute" style="z-index: 1100;" id="DLContent" hidden>
+    <div class="modal-content absolute" style="z-index: 1100; font-family: 'Yuji Syuku', serif !important;" id="DLContent" hidden>
         <div class="input-group">
             <input type="text" class="filename-input" id="fileNameTextbox" placeholder="ファイル名">
             <span class="file-extension">.html</span>
@@ -82,7 +82,7 @@
     </div>
     <!-- コード表示モーダル -->
     <div id="htmlPreviewModal" class="modal-overlay" onclick="closeHtmlPreview()" style="z-index: 1000;" hidden></div>
-    <div class="modal-content" style="z-index: 1100;" id="codeContent" hidden>
+    <div class="modal-content" style="z-index: 1100; font-family: 'Yuji Syuku', serif !important;" id="codeContent" hidden>
         <textarea id="htmlCodeViewer" readonly></textarea>
         <button class="copy-btn" onclick="copyHtmlCode()">Copy</button>
     </div>
