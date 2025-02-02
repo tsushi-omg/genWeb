@@ -62,6 +62,7 @@ body::before {
 
 .forimg{
   border: dotted rgb(214, 214, 214);
+  outline: none;
 }
 
 /* 絶対位置 */
@@ -241,6 +242,8 @@ body::before {
 .genText{}
 
 .genImg{}
+
+.genVideo{}
 
 .help-window {
   background-color: transparent;

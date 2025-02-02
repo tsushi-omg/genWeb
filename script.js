@@ -189,7 +189,7 @@ editorDiv.addEventListener('drop', function(event){
             img.src = e.target.result;
             img.style.maxWidth = '80%';
             img.style.height = 'auto';
-            img.style.left = mouseX + "px";
+            img.style.left = "10px";
             img.style.top = mouseY + "px";
             img.style.position="absolute";
             img.classList.add('forimg');
@@ -270,7 +270,7 @@ editorDiv.addEventListener('paste', function(event){
                 img.src = e.target.result;
                 // img.style.maxWidth = '80%';
                 img.style.height = 'auto';
-                img.style.left = mouseX + "px";
+                img.style.left = "10px";
                 img.style.top = mouseY + "px";
                 img.style.position = "absolute";
                 img.classList.add('forimg');
@@ -336,6 +336,185 @@ editorDiv.addEventListener('paste', function(event){
 editorDiv.addEventListener('dragover', function(event) {
     event.preventDefault(); // ドロップを許可するためにデフォルト動作を防ぐ
 });
+
+//動画ドロップイベント(mp4)
+editorDiv.addEventListener('drop', function(event){
+    event.preventDefault();
+    const files = event.dataTransfer.files; // ファイルを取得
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        if (file && file.type.startsWith('video/mp4')) {
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                const base64Video = e.target.result;//resultで得られたデータをbase64エンコードし、viodeタグのsrc属性に付与
+
+                // video要素を作成
+                const video = document.createElement('video');
+                video.src = base64Video;
+                video.style.maxWidth = '80%';
+                video.style.height = 'auto';
+                video.style.left = "10px";
+                video.style.top = mouseY + "px";
+                video.style.position = "absolute";
+                video.classList.add('forimg');
+                video.style.zIndex = 15;
+                video.id = base64Video;
+                video.classList.add('genTarget');
+                video.classList.add('genVideo');
+
+                // 動画を再生できるようにする
+                video.controls = true; // 動画の再生/停止ボタンを表示
+                video.muted = true; // 自動再生のためにミュート
+                video.autoplay = true; // 自動再生（muted 必須）
+                video.loop = true;
+
+                mouseDrag(video);
+                editorDiv.appendChild(video);
+
+                // スライダー更新
+                widthRange.value = deletePx(window.getComputedStyle(video).width);
+                heightRange.value = deletePx(window.getComputedStyle(video).height);
+
+                // スライダー非活性
+                fontSizeRange.disabled = true;
+                FSInput.disabled = true;
+                heightRange.disabled = true;
+                heightInput.disabled = true;
+
+                currentElement = video;
+
+                // スライダー更新
+                widthRange.value = deletePx(window.getComputedStyle(video).width);
+                heightRange.value = deletePx(window.getComputedStyle(video).height);
+                // box更新
+                widthInput.value = deletePx(window.getComputedStyle(video).width);
+                heightInput.value = deletePx(window.getComputedStyle(video).height);
+
+                // 操作中の要素を判別
+                video.addEventListener("click", function(event){
+                    currentElement = video;
+                    // スライダー更新
+                    widthRange.value = deletePx(window.getComputedStyle(video).width);
+                    heightRange.value = deletePx(window.getComputedStyle(video).height);
+
+                    // box更新
+                    widthInput.value = deletePx(window.getComputedStyle(video).width);
+                    heightInput.value = deletePx(window.getComputedStyle(video).height);
+
+                    // スライダー非活性
+                    fontSizeRange.disabled = true;
+                    FSInput.disabled = true;
+                    heightRange.disabled = true;
+                    heightInput.disabled = true;
+                });
+
+                video.addEventListener("contextmenu", function(event){
+                    event.preventDefault();
+                    currentElement = video;
+                    modal.hidden = false;
+                    deleteBtn.hidden = false;
+                    deleteBtn.style.left = mouseX + "px";
+                    deleteBtn.style.top = mouseY + "px";
+                });
+            };
+
+            reader.readAsDataURL(file); // ファイルをDataURLとして読み込む
+        } else {
+            // alert('MP4動画ファイルのみドロップできます');
+        }
+    }
+});
+
+// //動画ペーストペーストイベント(mp4)
+// editorDiv.addEventListener('paste', function(event){
+//     event.preventDefault();
+//     const files = event.clipboardData.items; // ファイルを取得
+//     for (let i = 0; i < files.length; i++) {
+//         const file = files[i];
+//         if (file && file.type.startsWith('video/mp4')) {
+//             const reader = new FileReader();
+
+//             reader.onload = function(e) {
+//                 const base64Video = e.target.result;//resultで得られたデータをbase64エンコードし、viodeタグのsrc属性に付与
+
+//                 // video要素を作成
+//                 const video = document.createElement('video');
+//                 video.src = base64Video;
+//                 video.style.maxWidth = '80%';
+//                 video.style.height = 'auto';
+//                 video.style.left = "10px";
+//                 video.style.top = mouseY + "px";
+//                 video.style.position = "absolute";
+//                 video.classList.add('forimg');
+//                 video.style.zIndex = 15;
+//                 video.id = base64Video;
+//                 video.classList.add('genTarget');
+//                 video.classList.add('genVideo');
+
+//                 // 動画を再生できるようにする
+//                 video.controls = true; // 動画の再生/停止ボタンを表示
+//                 video.muted = true; // 自動再生のためにミュート
+//                 video.autoplay = true; // 自動再生（muted 必須）
+                    // video.loop = true;
+
+//                 mouseDrag(video);
+//                 editorDiv.appendChild(video);
+
+//                 // スライダー更新
+//                 widthRange.value = deletePx(window.getComputedStyle(video).width);
+//                 heightRange.value = deletePx(window.getComputedStyle(video).height);
+
+//                 // スライダー非活性
+//                 fontSizeRange.disabled = true;
+//                 FSInput.disabled = true;
+//                 heightRange.disabled = true;
+//                 heightInput.disabled = true;
+
+//                 currentElement = video;
+
+//                 // スライダー更新
+//                 widthRange.value = deletePx(window.getComputedStyle(video).width);
+//                 heightRange.value = deletePx(window.getComputedStyle(video).height);
+//                 // box更新
+//                 widthInput.value = deletePx(window.getComputedStyle(video).width);
+//                 heightInput.value = deletePx(window.getComputedStyle(video).height);
+
+//                 // 操作中の要素を判別
+//                 video.addEventListener("click", function(event){
+//                     currentElement = video;
+//                     // スライダー更新
+//                     widthRange.value = deletePx(window.getComputedStyle(video).width);
+//                     heightRange.value = deletePx(window.getComputedStyle(video).height);
+
+//                     // box更新
+//                     widthInput.value = deletePx(window.getComputedStyle(video).width);
+//                     heightInput.value = deletePx(window.getComputedStyle(video).height);
+
+//                     // スライダー非活性
+//                     fontSizeRange.disabled = true;
+//                     FSInput.disabled = true;
+//                     heightRange.disabled = true;
+//                     heightInput.disabled = true;
+//                 });
+
+//                 video.addEventListener("contextmenu", function(event){
+//                     event.preventDefault();
+//                     currentElement = video;
+//                     modal.hidden = false;
+//                     deleteBtn.hidden = false;
+//                     deleteBtn.style.left = mouseX + "px";
+//                     deleteBtn.style.top = mouseY + "px";
+//                 });
+//             };
+
+//             reader.readAsDataURL(file); // ファイルをDataURLとして読み込む
+//         } else {
+//             // alert('MP4動画ファイルのみドロップできます');
+//         }
+//     }
+// });
+
 
 
 //スタイルボタン　イベント
@@ -522,6 +701,10 @@ function reConstruct(){
                 createImg(element.top, element.left, element.width, element.height, element.src);
                 break;
             }
+            case "video":{
+                createVideo(element.top, element.left, element.width, element.height, element.src);
+                break;
+            }
             case "body":{
                 reConstructPage(element.height);
                 break;
@@ -586,6 +769,70 @@ function createImg(top_, left_, width_, height_, src_){
         deleteBtn.style.top = mouseY + "px";
     });
 }
+
+function createVideo(top_, left_, width_, height_, src_){
+    const video = document.createElement('video'); // video要素を作成
+    video.src = src_;
+    video.style.height = "auto";
+    video.style.width = width_;
+    video.style.left = left_;
+    video.style.top = top_;
+    video.style.position = "absolute";
+    video.classList.add('forimg');
+    video.style.zIndex=15;
+    video.classList.add('genTarget');
+    video.classList.add('genVideo');
+    video.id = src_;
+    mouseDrag(video);
+    editorDiv.appendChild(video);
+
+    // 動画を再生できるようにする
+    video.controls = true; // 動画の再生/停止ボタンを表示
+    video.muted = true; // 自動再生のためにミュート
+    video.autoplay = true; // 自動再生（muted 必須）
+    video.loop = true;
+
+    // スライダー更新
+    widthRange.value = deletePx(window.getComputedStyle(video).width);
+    heightRange.value = deletePx(window.getComputedStyle(video).height);
+
+    // スライダー非活性
+    fontSizeRange.disabled=true;
+    FSInput.disabled=true;
+    heightRange.disabled=true;
+    heightInput.disabled=true;
+
+    currentElement = video;
+
+
+    // スライダー更新
+    widthRange.value = deletePx(window.getComputedStyle(video).width);
+    heightRange.value = deletePx(window.getComputedStyle(video).height);
+
+    // 操作中の要素を判別
+    video.addEventListener("click", function(event){
+        currentElement = video;
+        // スライダー更新
+        widthRange.value = deletePx(window.getComputedStyle(video).width);
+        heightRange.value = deletePx(window.getComputedStyle(video).height);
+
+        // スライダー非活性
+        fontSizeRange.disabled=true;
+        FSInput.disabled=true;
+        heightRange.disabled=true;
+        heightInput.disabled=true;
+    });
+
+    video.addEventListener("contextmenu", function(event){
+        event.preventDefault();
+        currentElement=video;
+        modal.hidden=false;
+        deleteBtn.hidden=false;
+        deleteBtn.style.left = mouseX + "px";
+        deleteBtn.style.top = mouseY + "px";
+    });
+}
+
 
 //画面クリア
 function deleteAll(){
@@ -735,6 +982,10 @@ function generate(){
       font-family: 'Poppins', sans-serif;
     }
 
+    .forVideo{
+      box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5);
+    }
+
     body{
       width: 100vw;
       height: ${911 * pageCount}px;/* ページの長さを指定 */
@@ -780,8 +1031,12 @@ function generate(){
     for(var element of targetArray){
         cnt++;
         //分岐
-        switch(element.classList.contains('genText')){
-            case true:{//テキスト
+        var judge;
+        if(element.classList.contains('genText')) judge = 1;
+        if(element.classList.contains('genImg')) judge = 2;
+        if(element.classList.contains('genVideo')) judge = 3;
+        switch(judge){
+            case 1:{//テキスト
                 const style = window.getComputedStyle(element);
                 resultCode += `<textarea class="forText" style="position: absolute; left: ${window.getComputedStyle(element).left}; top: ${window.getComputedStyle(element).top}; width: ${window.getComputedStyle(element).width}; height: ${window.getComputedStyle(element).height}; font-size: ${window.getComputedStyle(element).fontSize}; ${style.fontWeight == 700 ? "font-weight: bold; " : ""}${style.textDecorationLine == "underline" ? "text-decoration: underline;" : ""}" readonly spellcheck="off">${element.value}</textarea>
 `;
@@ -799,13 +1054,28 @@ function generate(){
             });
                 break;
             }
-            case false:{//画像
+            case 2:{//画像
                 resultCode += `<!-- イメージ -->
 <img src="${element.id}" style="position: absolute; left: ${window.getComputedStyle(element).left}; top: ${window.getComputedStyle(element).top}; width: ${window.getComputedStyle(element).width}; height: ${window.getComputedStyle(element).height};">
 `;
             //再生成時用の情報
             mainData.push({
                 type: "img",
+                top: window.getComputedStyle(element).top,
+                left: window.getComputedStyle(element).left,
+                width: window.getComputedStyle(element).width,
+                height: window.getComputedStyle(element).height,
+                src: element.id
+            });
+                break;
+            }
+            case 3:{//ビデオ
+                resultCode += `<!-- ビデオ -->
+<video class = "forVideo" style="position: absolute; left: ${window.getComputedStyle(element).left}; top: ${window.getComputedStyle(element).top}; width: ${window.getComputedStyle(element).width}; height: ${window.getComputedStyle(element).height};" controls= true  muted= true  autoplay= true loop= true><source src="${element.id}" type="video/mp4"></video>
+`;
+            //再生成時用の情報
+            mainData.push({
+                type: "video",
                 top: window.getComputedStyle(element).top,
                 left: window.getComputedStyle(element).left,
                 width: window.getComputedStyle(element).width,
