@@ -682,6 +682,9 @@ editorDiv.addEventListener('drop', function(event) {
         reConstruct();
 
         };
+
+        //ファイル名を設定
+        fileNameTextbox.value = file.name.substring(0,file.name.length-5);
   
       reader.readAsText(file); // ファイルをテキストとして読み込む
     } else {
@@ -703,6 +706,10 @@ function reConstruct(){
             }
             case "video":{
                 createVideo(element.top, element.left, element.width, element.height, element.src);
+                break;
+            }
+            case "square":{
+                createSquare(true, element.top, element.left, element.width, element.height);
                 break;
             }
             case "body":{
@@ -755,7 +762,7 @@ function createImg(top_, left_, width_, height_, src_){
 
         // スライダー非活性
         fontSizeRange.disabled=true;
-        FSInput.disabled=true;
+        fontSizeRange.disabled=true;
         heightRange.disabled=true;
         heightInput.disabled=true;
     });
@@ -854,6 +861,122 @@ function reConstructPage(height){
         addPage();
     }
 }
+
+var isMouseDown = false;//マウスダウン判定
+var isRDown = false;//R判定
+var isAltDown = false;//E判定
+
+//マウスダウン判定
+var startX = 0;
+var startY = 0;
+editorDiv.addEventListener("mousedown", function(event){
+    isMouseDown=true;
+    startX = mouseX;
+    startY = mouseY;
+    if(isRDown){
+        createSquare(false);
+    }
+});
+//リサイズ
+document.addEventListener("mousemove", function(event){
+    // if(!isMouseDown || !isRDown)return;
+    //     currentElement.style.width = mouseX - startX + "px";
+    //     currentElement.style.height = mouseY - startY + "px";
+    if(isMouseDown && isRDown){
+        currentElement.style.width = mouseX - startX + "px";
+        currentElement.style.height = mouseY - startY + "px";
+        editorDiv.focus();
+    }
+    if(isMouseDown && isAltDown){
+        currentElement.style.width = mouseX - deletePx(window.getComputedStyle(currentElement).left) + "px";
+        currentElement.style.height = mouseY - deletePx(window.getComputedStyle(currentElement).top) + "px";
+    }
+});
+
+editorDiv.addEventListener("mouseup", function(event){
+    isMouseDown=false;
+});
+
+// R Eダウン判定
+document.addEventListener("keydown", function(event){
+    if(event.key == "R" || event.key == "r"){
+        isRDown=true;
+    };
+    if(event.key == "Alt"){
+        isAltDown=true;
+    };
+});
+
+document.addEventListener("keyup", function(event){
+        isRDown=false;
+        isAltDown=false;
+});
+
+//四角枠生成
+function createSquare(isReConstruct, top_, left_, width_, height_){
+    //入力用のテキストエリアを作成
+    const element = document.createElement('div');
+    element.id = randomID();
+    element.classList.add('forSquare');
+    element.classList.add('absolute');
+    element.classList.add('genTarget');
+    element.classList.add('genSquare');
+    element.style.left = mouseX + "px";
+    element.style.top = mouseY + "px";
+    if (isReConstruct) { // 再構築
+        element.style.left = left_;
+        element.style.top = top_;
+        element.style.width = width_;
+        element.style.height = height_;
+    } 
+    element.style.zIndex=14;
+    mouseDrag(element);
+    editorDiv.appendChild(element);
+
+    //右クリックで削除
+    element.addEventListener("contextmenu", function(event){
+        event.preventDefault();
+        currentElement=element;
+        modal.hidden=false;
+        deleteBtn.hidden=false;
+        deleteBtn.style.left = mouseX + "px";
+        deleteBtn.style.top = mouseY + "px";
+    });
+
+    currentElement=element;
+
+    //スライダー表示
+    fontSizeRange.disabled=true;
+    FSInput.disabled=true;
+    heightRange.disabled=false;
+    heightInput.disabled=false;
+
+    //スライダー更新
+    widthRange.value = deletePx(window.getComputedStyle(element).width);
+    heightRange.value = deletePx(window.getComputedStyle(element).height);
+
+    //box更新
+    widthInput.value = deletePx(window.getComputedStyle(element).width);
+    heightInput.value = deletePx(window.getComputedStyle(element).height);
+
+    //操作中の要素を判別
+    element.addEventListener("click", function(event){
+        currentElement=element;
+        //スライダー表示
+        fontSizeRange.disabled=false;
+        FSInput.disabled=true;
+        fontSizeRange.disabled=true;
+        heightRange.disabled=false;
+        heightInput.disabled=false;
+        //スライダー更新
+        widthRange.value = deletePx(window.getComputedStyle(element).width);
+        heightRange.value = deletePx(window.getComputedStyle(element).height);
+        //box更新
+        widthInput.value = deletePx(window.getComputedStyle(element).width);
+        heightInput.value = deletePx(window.getComputedStyle(element).height);
+    })
+}
+
   
 
 
@@ -982,6 +1105,12 @@ function generate(){
       font-family: 'Poppins', sans-serif;
     }
 
+    .forSquare{
+      background-color: transparent;
+      border: solid rgb(214, 214, 214);
+      z-index: -1;
+    }
+
     .forVideo{
       box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5);
     }
@@ -1035,6 +1164,7 @@ function generate(){
         if(element.classList.contains('genText')) judge = 1;
         if(element.classList.contains('genImg')) judge = 2;
         if(element.classList.contains('genVideo')) judge = 3;
+        if(element.classList.contains('genSquare')) judge = 4;
         switch(judge){
             case 1:{//テキスト
                 const style = window.getComputedStyle(element);
@@ -1081,6 +1211,20 @@ function generate(){
                 width: window.getComputedStyle(element).width,
                 height: window.getComputedStyle(element).height,
                 src: element.id
+            });
+                break;
+            }
+            case 4:{//四角枠
+                const style = window.getComputedStyle(element);
+                resultCode += `<div class="forSquare" style="position: absolute; left: ${style.left}; top: ${style.top}; width: ${style.width}; height: ${style.height};"></div>
+`;
+            //再生成時用の情報
+            mainData.push({
+                type: "square",
+                top: window.getComputedStyle(element).top,
+                left: window.getComputedStyle(element).left,
+                width: window.getComputedStyle(element).width,
+                height: window.getComputedStyle(element).height
             });
                 break;
             }

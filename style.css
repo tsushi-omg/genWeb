@@ -65,6 +65,13 @@ body::before {
   outline: none;
 }
 
+.forSquare{
+  outline: none;
+  border: solid rgb(214, 214, 214);
+  resize: none;
+  background-color: transparent;
+}
+
 /* 絶対位置 */
 .absolute{
   position: absolute;
@@ -244,6 +251,8 @@ body::before {
 .genImg{}
 
 .genVideo{}
+
+.genSquare{}
 
 .help-window {
   background-color: transparent;
