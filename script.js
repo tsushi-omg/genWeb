@@ -71,6 +71,7 @@ function createText(isReConstruct, top_, left_, width_, height_, fontSize_, bold
     element.addEventListener("contextmenu", function(event){
         event.preventDefault();
         currentElement=element;
+        settingCurrent();
         modal.hidden=false;
         deleteBtn.hidden=false;
         deleteBtn.style.left = mouseX + "px";
@@ -86,6 +87,7 @@ function createText(isReConstruct, top_, left_, width_, height_, fontSize_, bold
     });
 
     currentElement=element;
+    settingCurrent();
 
     //スライダー表示
     fontSizeRange.disabled=false;
@@ -106,6 +108,7 @@ function createText(isReConstruct, top_, left_, width_, height_, fontSize_, bold
     //操作中の要素を判別
     element.addEventListener("click", function(event){
         currentElement=element;
+        settingCurrent();
         //スライダー表示
         fontSizeRange.disabled=false;
         FSInput.disabled=false;
@@ -212,6 +215,7 @@ editorDiv.addEventListener('drop', function(event){
             heightInput.disabled=true;
 
             currentElement=img;
+            settingCurrent();
 
             //スライダー更新
             widthRange.value = deletePx(window.getComputedStyle(img).width);
@@ -223,6 +227,7 @@ editorDiv.addEventListener('drop', function(event){
             //操作中の要素を判別
             img.addEventListener("click", function(event){
                 currentElement=img;
+                settingCurrent();
                 //スライダー更新
                 widthRange.value = deletePx(window.getComputedStyle(img).width);
                 heightRange.value = deletePx(window.getComputedStyle(img).height);
@@ -241,6 +246,7 @@ editorDiv.addEventListener('drop', function(event){
             img.addEventListener("contextmenu", function(event){
                 event.preventDefault();
                 currentElement=img;
+                settingCurrent();
                 modal.hidden=false;
                 deleteBtn.hidden=false;
                 deleteBtn.style.left = mouseX + "px";
@@ -293,6 +299,7 @@ editorDiv.addEventListener('paste', function(event){
                 heightInput.disabled=true;
 
                 currentElement = img;
+                settingCurrent();
 
 
                 // スライダー更新
@@ -302,6 +309,7 @@ editorDiv.addEventListener('paste', function(event){
                 // 操作中の要素を判別
                 img.addEventListener("click", function(event){
                     currentElement = img;
+                    settingCurrent();
                     // スライダー更新
                     widthRange.value = deletePx(window.getComputedStyle(img).width);
                     heightRange.value = deletePx(window.getComputedStyle(img).height);
@@ -316,6 +324,7 @@ editorDiv.addEventListener('paste', function(event){
                 img.addEventListener("contextmenu", function(event){
                     event.preventDefault();
                     currentElement=img;
+                    settingCurrent();
                     modal.hidden=false;
                     deleteBtn.hidden=false;
                     deleteBtn.style.left = mouseX + "px";
@@ -383,6 +392,7 @@ editorDiv.addEventListener('drop', function(event){
                 heightInput.disabled = true;
 
                 currentElement = video;
+                settingCurrent();
 
                 // スライダー更新
                 widthRange.value = deletePx(window.getComputedStyle(video).width);
@@ -394,6 +404,7 @@ editorDiv.addEventListener('drop', function(event){
                 // 操作中の要素を判別
                 video.addEventListener("click", function(event){
                     currentElement = video;
+                    settingCurrent();
                     // スライダー更新
                     widthRange.value = deletePx(window.getComputedStyle(video).width);
                     heightRange.value = deletePx(window.getComputedStyle(video).height);
@@ -412,6 +423,7 @@ editorDiv.addEventListener('drop', function(event){
                 video.addEventListener("contextmenu", function(event){
                     event.preventDefault();
                     currentElement = video;
+                    settingCurrent();
                     modal.hidden = false;
                     deleteBtn.hidden = false;
                     deleteBtn.style.left = mouseX + "px";
@@ -747,6 +759,7 @@ function createImg(top_, left_, width_, height_, src_){
     heightInput.disabled=true;
 
     currentElement = img;
+    settingCurrent();
 
 
     // スライダー更新
@@ -756,6 +769,7 @@ function createImg(top_, left_, width_, height_, src_){
     // 操作中の要素を判別
     img.addEventListener("click", function(event){
         currentElement = img;
+        settingCurrent();
         // スライダー更新
         widthRange.value = deletePx(window.getComputedStyle(img).width);
         heightRange.value = deletePx(window.getComputedStyle(img).height);
@@ -770,6 +784,7 @@ function createImg(top_, left_, width_, height_, src_){
     img.addEventListener("contextmenu", function(event){
         event.preventDefault();
         currentElement=img;
+        settingCurrent();
         modal.hidden=false;
         deleteBtn.hidden=false;
         deleteBtn.style.left = mouseX + "px";
@@ -810,6 +825,7 @@ function createVideo(top_, left_, width_, height_, src_){
     heightInput.disabled=true;
 
     currentElement = video;
+    settingCurrent();
 
 
     // スライダー更新
@@ -819,6 +835,7 @@ function createVideo(top_, left_, width_, height_, src_){
     // 操作中の要素を判別
     video.addEventListener("click", function(event){
         currentElement = video;
+        settingCurrent();
         // スライダー更新
         widthRange.value = deletePx(window.getComputedStyle(video).width);
         heightRange.value = deletePx(window.getComputedStyle(video).height);
@@ -833,6 +850,7 @@ function createVideo(top_, left_, width_, height_, src_){
     video.addEventListener("contextmenu", function(event){
         event.preventDefault();
         currentElement=video;
+        settingCurrent();
         modal.hidden=false;
         deleteBtn.hidden=false;
         deleteBtn.style.left = mouseX + "px";
@@ -929,7 +947,7 @@ function createSquare(isReConstruct, top_, left_, width_, height_){
         element.style.width = width_;
         element.style.height = height_;
     } 
-    element.style.zIndex=14;
+    element.style.zIndex=15;
     mouseDrag(element);
     editorDiv.appendChild(element);
 
@@ -937,6 +955,7 @@ function createSquare(isReConstruct, top_, left_, width_, height_){
     element.addEventListener("contextmenu", function(event){
         event.preventDefault();
         currentElement=element;
+        settingCurrent();
         modal.hidden=false;
         deleteBtn.hidden=false;
         deleteBtn.style.left = mouseX + "px";
@@ -944,6 +963,7 @@ function createSquare(isReConstruct, top_, left_, width_, height_){
     });
 
     currentElement=element;
+    settingCurrent();
 
     //スライダー表示
     fontSizeRange.disabled=true;
@@ -962,6 +982,7 @@ function createSquare(isReConstruct, top_, left_, width_, height_){
     //操作中の要素を判別
     element.addEventListener("click", function(event){
         currentElement=element;
+        settingCurrent();
         //スライダー表示
         fontSizeRange.disabled=false;
         FSInput.disabled=true;
@@ -977,6 +998,13 @@ function createSquare(isReConstruct, top_, left_, width_, height_){
     })
 }
 
+document.addEventListener("keydown", function(event){
+    if(event.key == "Escape"){
+        // preventDefault();
+        currentElement = "";
+        settingCurrent();
+    }
+})
   
 
 
@@ -1065,7 +1093,10 @@ function mouseDrag(element) {
             if(element.id=="taskWindow")this.style.position = 'fixed';
             this.draggable      = false;
             this.setPointerCapture(event.pointerId);
-            if(!element.id=="taskWindow")currentElement=element;
+            if(!element.id=="taskWindow"){
+                currentElement=element;
+                settingCurrent();
+            };
         }
     };
 }
@@ -1253,6 +1284,13 @@ function preview(){
         newWindow.postMessage(resultCode, '*');
     };
 };
+
+function settingCurrent(){
+    for(var element of document.getElementsByClassName('currentElement')){
+        element.classList.remove('currentElement');
+    }
+    currentElement.classList.add('currentElement');
+}
 
 
 

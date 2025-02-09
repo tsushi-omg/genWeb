@@ -77,6 +77,10 @@ body::before {
   position: absolute;
 }
 
+.currentElement{
+  border-color: #00aaff;
+}
+
 #addPageButton{
   position: fixed;
   left: 96vw;
