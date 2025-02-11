@@ -55,7 +55,8 @@ body::before {
 /* テキスト入力用　テキストエリア */
 .forText{
   outline: none;
-  border: dotted rgb(214, 214, 214);
+  /* border: dotted rgb(214, 214, 214); */
+  border: none;
   resize: none;
   background-color: transparent;
 }
@@ -78,7 +79,8 @@ body::before {
 }
 
 .currentElement{
-  border-color: #00aaff;
+  /* border-color: #00aaff; */
+  border: dotted #00aaff !important;
 }
 
 #addPageButton{
