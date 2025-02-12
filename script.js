@@ -1006,11 +1006,11 @@ document.addEventListener("keydown", function(event){
     }
 })
 
-document.addEventListener('contextmenu', function(event){
-    event.preventDefault();
-    currentElement = "";
-    settingCurrent();
-})
+// document.addEventListener('contextmenu', function(event){
+//     event.preventDefault();
+//     currentElement = "";
+//     settingCurrent();
+// })
   
 
 
