@@ -13,13 +13,13 @@
         <div class="absolute">
             <div class="mt-2" style="margin-left: 290px;">
                 <select class="select-box" id="menuSelect">
-                    <option>デザイン</option>
+                    <option selected>デザイン</option>
                     <option>生成</option>
-                    <option selected>ヘルプ</option>
+                    <option>ヘルプ</option>
                 </select>
             </div>
             <!-- デザイン -->
-            <div id="designWindow" hidden>
+            <div id="designWindow">
                 <!-- range -->
                 <div style="margin-left: 10px;" class="mt-3"><label class="text-white bold">width</label><input type="text" class="textBox1" maxlength="4" style="margin-left: 16px;" id="widthInput">
                     <input type="range" id="widthRange" style="margin-left: 5px;" class="range-slider" min="5" max="2000"></div>
@@ -40,7 +40,7 @@
                 <button class="button3" onclick="openDL()">Download</button>
             </div>
             <!-- ヘルプ -->
-            <div id="helpWindow" class="help-window mt-1" style="margin-left: 25px; margin-top: -15px;" >
+            <div id="helpWindow" class="help-window mt-1" style="margin-left: 25px; margin-top: -15px;" hidden>
                 <div style="max-height: 200px; width: 350px; overflow-y: auto;">
                 <div class="help-item">
                     <span class="help-icon">📄</span> <span class="help-text">【テキスト追加】 ctrl + クリック</span>
