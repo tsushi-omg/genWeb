@@ -1000,10 +1000,16 @@ function createSquare(isReConstruct, top_, left_, width_, height_){
 
 document.addEventListener("keydown", function(event){
     if(event.key == "Escape"){
-        // preventDefault();
+        event.preventDefault();
         currentElement = "";
         settingCurrent();
     }
+})
+
+document.addEventListener('contextmenu', function(event){
+    event.preventDefault();
+    currentElement = "";
+    settingCurrent();
 })
   
 
